@@ -1,17 +1,17 @@
 <script setup lang="ts">
-import Add from "./components/Add.vue";
-import Chemistry from "./components/Chemistry.vue";
-import ChemistryRadio from "./components/ChemistryRadio.vue";
-import ChemistryCheckbox from "./components/ChemistryCheckbox.vue";
-import EnglishRadio from "./components/EnglishRadio.vue";
-import EnglishCheckbox from "./components/EnglishCheckbox.vue";
+import Chinese from "./components/ChineseDB.vue";
 import English  from "./components/EnglishDB.vue";
+import History from "./components/HistoryDB.vue";
+import Geography from "./components/GeographyDB.vue";
+import Biology from "./components/BiologyDB.vue"
 import { reactive } from "vue";
 let choice = reactive({title:'英文', value:"English"});
 let items=[
+  {title:'國文', value:"Chinese"},
   {title:'英文', value:"English"},
-  {title:'化學', value:"Chemistry"},
-  {title:'化學單選', value:"ChemistryRadio"}
+  {title:'歷史', value:"History"},
+  {title:'地理', value:"Geography"},
+  {title:'生物', value:"Biology"}
 ]
 </script>
 
@@ -20,26 +20,11 @@ let items=[
     <v-select label="請選擇" v-model="choice.value" :items="items" item-title="title" item-value="value">
     </v-select>
     <Suspense>
-      <English v-if="choice.value === 'English'" />
-      <Chemistry v-else-if="choice.value === 'Chemistry'" />
-      <ChemistryRadio v-else />
+      <Chinese v-if="choice.value === 'Chinese'" />
+      <English v-else-if="choice.value === 'English'" />
+      <History v-else-if="choice.value === 'History'" />
+      <Geography v-else-if="choice.value === 'Geography'" />
+      <Biology v-else />
     </Suspense>
-
-    <!-- <select v-model="choice" class="sel">
-      <option value="Add">加法</option>
-      <option value="Chemistry">化學填空</option>
-      <option value="ChemistryRadio">化學單選</option>
-      <option value="ChemistryCheckbox">化學多選</option>
-      <option value="EnglishRadio">英文單選</option>
-      <option value="EnglishCheckbox">英文多選</option>
-      <option value="English">英文</option>
-    </select> -->
-    
-    <!-- <Chemistry v-if="choice === 'Chemistry'" />
-    <ChemistryRadio v-else-if="choice === 'ChemistryRadio'" />
-    <ChemistryCheckbox v-else-if="choice === 'ChemistryCheckbox'" />
-    <EnglishRadio v-else-if="choice === 'EnglishRadio'" />
-    <EnglishCheckbox v-else-if="choice === 'EnglishCheckbox'" />
-    <Add v-else /> -->
   </div>
 </template>
