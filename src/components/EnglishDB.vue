@@ -61,6 +61,7 @@ function checkAnswers() {
 
 </script>
 <template>
+  
   <v-container>
     <v-select label="請選擇" v-model="state.choice" :items="units">
     </v-select>
