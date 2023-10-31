@@ -4,10 +4,10 @@ import { collection, getDocs, getFirestore, where, query } from "firebase/firest
 import app from "@/components/settings/FirebaseConfig.vue";
 
 let units=[
-  {title:'單元一', value:1},
-  {title:'單元二', value:2},
+  {title:'單元一 東半球的地理', value:1},
+  {title:'單元二 西半球的地理', value:2},
 ]
-const state = reactive({choice:{title:'單元一', value:1}, answer:[''], message: [''], exams: [{question:'', answer:''}] });
+const state = reactive({choice:{title:'單元一 東半球的地理', value:1}, answer:[''], message: [''], exams: [{question:'', answer:''}] });
 
 
 async function generateQuestions(){

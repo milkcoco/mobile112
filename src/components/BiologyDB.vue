@@ -7,7 +7,7 @@ let units=[
   {title:'單元一 植物', value:1},
   {title:'單元二 動物', value:2},
 ]
-const state = reactive({choice:{title:'單元一', value:1}, answer:[''], message: [''], exams: [{question:'', answer:''}] });
+const state = reactive({choice:{title:'單元一 植物', value:1}, answer:[''], message: [''], exams: [{question:'', answer:''}] });
 
 
 async function generateQuestions(){
