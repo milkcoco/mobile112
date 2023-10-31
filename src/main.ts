@@ -3,6 +3,7 @@
 import { createApp } from 'vue'
 import App from './App.vue'
 
+
 //vuetify
 import 'vuetify/styles'
 import { createVuetify } from 'vuetify'
