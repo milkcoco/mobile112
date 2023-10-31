@@ -8,13 +8,14 @@ import Geography from "./components/GeographyDB.vue";
 //import ChemistryRadio from "./components/ChemistryRadio.vue";
 import { reactive,ref } from "vue";
 let drawer = ref(false);
-let choice = reactive({title:'英文', value:"English"});
+let choice = reactive({title:'國文', value:"Chinese"});
 let items=[
-  {title:'英文', value:"English"},
-  {title:'生物', value:"Biology"},
-  {title:'歷史', value:"History"},
   {title:'國文', value:"Chinese"},
-  {title:'地理', value:"Geography"},]
+  {title:'英文', value:"English"},
+  {title:'地理', value:"Geography"},
+  {title:'歷史', value:"History"},
+  {title:'生物', value:"Biology"},
+  ]
 </script>
 
 <template>
