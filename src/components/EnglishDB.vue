@@ -31,6 +31,6 @@ generateQuestion();
       :label="exams[state.currentQuestion].question"
       :messages="state.message">
     </v-text-field>
-    <v-btn color="primary" @click="generateQuestion">下一題</v-btn>
+    <v-btn color="primary" @click="generateQuestion">下一題11</v-btn>
   </div>
 </template>
