@@ -1,4 +1,16 @@
 <script setup lang="ts">
+<<<<<<< HEAD
+//import ChemistryInput from "./components/ChemistryInput.vue";
+//import ChemistryRadio from "./components/ChemistryRadio.vue";
+import { ref } from "vue";
+let drawer = ref(false);
+let items=[
+  {title:'國文', to:'/Chinese'},
+  {title:'英文', to:'/English'},
+  {title:'地理', to:'/Geography'},
+  {title:'歷史', to:'/History'},
+  {title:'生物', to:'/Biology'},
+=======
 import { ref } from "vue";
 let drawer = ref(false);
 let items=[
@@ -7,6 +19,7 @@ let items=[
   {title:'地理', to: '/geography'},
   {title:'歷史', to: '/history'},
   {title:'生物', to: '/biology'},
+>>>>>>> a1908841b5595e1acdfeffbbf1dd238d42d6518e
   ]
 // let items=[
 //   {title:'國文', value:"Chinese"},
@@ -30,6 +43,10 @@ let items=[
           :title="item.title" 
           :key="item.title" 
           :to="item.to">
+<<<<<<< HEAD
+
+=======
+>>>>>>> a1908841b5595e1acdfeffbbf1dd238d42d6518e
         </v-list-item>
       </v-list>
     </v-navigation-drawer>
@@ -37,11 +54,14 @@ let items=[
     <v-main class="d-flex flex-column align-start justify-start mb-6" style="min-height: 300px;">
       <Suspense>
         <RouterView />
+<<<<<<< HEAD
+=======
         <!-- <English v-if="choice.value === 'English'" />
         <Biology v-else-if="choice.value === 'Biology'"/>
         <History v-else-if="choice.value === 'History'"/>
         <Geography v-else-if="choice.value === 'Geography'"/>
         <Chinese v-else /> -->
+>>>>>>> a1908841b5595e1acdfeffbbf1dd238d42d6518e
       </Suspense>
     </v-main>
   </v-app>
