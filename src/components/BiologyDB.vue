@@ -94,19 +94,14 @@ function checkAnswers() {
           <span v-for="option in exam.option" :key="option">
             <v-radio :label="option" :value="option"></v-radio>
           </span>
-          <p>answer：{{ state.answer[index] }}</p>
         </v-radio-group>
       </p>
 
       <p v-if="exam.type === 'checkbox'">
-      <p>{{ exam.question }} {{ state.answers[index] }}</p>
+      <p>{{ exam.question }}</p>
       <span v-for="option in exam.option" :key="option">
         <v-checkbox inline v-model="state.answers[index]" :label="option" :value="option" ></v-checkbox>
       </span>
-        <!-- {{ exam.question }}
-        <span v-for="option in exam.option" :key="option">
-          <input type="checkbox" v-model="state.answers[index]" :value="option" />{{ option }}
-        </span> -->
         {{ state.message[index] }}
       </p>
     </div>
