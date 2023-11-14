@@ -1,11 +1,11 @@
 <script setup lang="ts">
-import { reactive, watch } from "vue";
-import { collection, getDocs, getFirestore, where, query } from "firebase/firestore";
-import app from "@/components/settings/FirebaseConfig.vue";
+import { reactive, watch } from 'vue'
+import { collection, getDocs, getFirestore, where, query } from 'firebase/firestore'
+import app from '@/components/settings/FirebaseConfig.vue'
 
-let units=[
-  {title:'單元一 東半球的地理', value:1},
-  {title:'單元二 西半球的地理', value:2},
+let units = [
+  { title: '單元一 東半球的地理', value: 1 },
+  { title: '單元二 西半球的地理', value: 2 }
 ]
 const state = reactive({
   choice: { title: '單元一 東半球的地理', value: 1 },

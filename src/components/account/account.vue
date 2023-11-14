@@ -1,8 +1,13 @@
 <script setup lang="ts">
 import { inject, reactive } from 'vue'
 import app from '@/components/settings/FirebaseConfig.vue'
-import { signInWithEmailAndPassword, createUserWithEmailAndPassword, getAuth, signOut } from 'firebase/auth'
-import { FirebaseError } from '@firebase/util';
+import {
+  signInWithEmailAndPassword,
+  createUserWithEmailAndPassword,
+  getAuth,
+  signOut
+} from 'firebase/auth'
+import { FirebaseError } from '@firebase/util'
 
 const account = reactive({
   email: '',
@@ -21,29 +26,27 @@ const login = inject('account', { name: '未登入', email: '' })
 async function handleClick(status: 'signIn' | 'signUp' | 'signOut') {
   try {
     state.status = 'info'
-    if (status==='signUp'){
+    if (status === 'signUp') {
       state.message = '註冊中...'
       const res = await createUserWithEmailAndPassword(auth, account.email, account.password)
       if (res.user) {
         state.status = 'success'
         state.message = '註冊成功'
       }
-    }
-    else if (status==='signIn'){
+    } else if (status === 'signIn') {
       state.message = '登入中...'
       const res = await signInWithEmailAndPassword(auth, account.email, account.password)
       if (res.user) {
         state.status = 'success'
-        state.message = login.email+'登入成功'
+        state.message = login.email + '登入成功'
       }
-    } else{
+    } else {
       state.message = '登出中...'
       await signOut(auth)
       state.status = 'success'
       state.message = '登出成功'
     }
-
-  }catch(e){
+  } catch (e) {
     state.status = 'error'
     if (e instanceof FirebaseError) {
       switch (e.code) {
@@ -82,18 +85,17 @@ async function handleClick(status: 'signIn' | 'signUp' | 'signOut') {
           break
       }
     } else {
-      state.message = "系統錯誤"
+      state.message = '系統錯誤'
     }
   }
 }
-
 </script>
 <template>
   <v-container>
     <v-text-field v-model="account.email" label="帳號"></v-text-field>
     <v-text-field v-model="account.password" label="密碼" type="password"></v-text-field>
     <v-alert :type="state.status" title="訊息" :text="state.message"></v-alert>
-    <br/>
+    <br />
     <v-btn color="primary" @click="handleClick('signIn')">登入</v-btn>
     <v-btn color="secondary" @click="handleClick('signOut')">登出</v-btn>
     <v-btn color="secondary" @click="handleClick('signUp')">註冊</v-btn>
