@@ -1,5 +1,8 @@
 <script setup lang="ts">
-import { ref } from 'vue'
+import { provide, reactive, readonly, ref } from 'vue'
+import app from '@/components/settings/FirebaseConfig.vue'
+import { getAuth, onAuthStateChanged } from 'firebase/auth'
+
 let drawer = ref(false)
 let items = [
   { title: '國文', to: '/chinese' },
@@ -8,13 +11,30 @@ let items = [
   { title: '歷史', to: '/history' },
   { title: '生物', to: '/biology' }
 ]
-// let items=[
-//   {title:'國文', value:"Chinese"},
-//   {title:'英文', value:"English"},
-//   {title:'地理', value:"Geography"},
-//   {title:'歷史', value:"History"},
-//   {title:'生物', value:"Biology"},
-//   ]
+
+const account = reactive({
+  name: '未登入',
+  email: ''
+})
+
+const auth = getAuth(app)
+const unsub = onAuthStateChanged(auth, (user)=>{
+  if (user) {
+    account.name='已登入'
+    account.email = user.email?user.email:''
+     console.log(user);
+  }
+  else{
+    account.name='未登入'
+    account.email = ''
+  }
+  return () => {
+    unsub();
+  }}
+);
+
+provide(/* key */ 'account', /* value */ readonly(account))
+
 </script>
 
 <template>
@@ -22,7 +42,7 @@ let items = [
     <v-app-bar>
       <v-icon icon="plus"></v-icon>
       <v-app-bar-nav-icon @click.stop="drawer = !drawer">menu</v-app-bar-nav-icon>
-      <v-app-bar-title>Application bar</v-app-bar-title>
+      <v-app-bar-title>Application bar  {{ account.email }}</v-app-bar-title>
     </v-app-bar>
     <v-navigation-drawer floating permanent v-model="drawer">
       <v-list>
