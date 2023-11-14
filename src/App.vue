@@ -19,20 +19,19 @@ const account = reactive({
 })
 
 const auth = getAuth(app)
-const unsub = onAuthStateChanged(auth, (user)=>{
+const unsub = onAuthStateChanged(auth, (user) => {
   if (user) {
-    account.name='已登入'
-    account.email = user.email?user.email:''
-     console.log(user);
-  }
-  else{
-    account.name='未登入'
+    account.name = '已登入'
+    account.email = user.email ? user.email : ''
+    console.log(user)
+  } else {
+    account.name = '未登入'
     account.email = ''
   }
   return () => {
-    unsub();
-  }}
-);
+    unsub()
+  }
+})
 
 provide(/* key */ 'account', /* value */ readonly(account))
 
