@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { provide, reactive, readonly, ref } from 'vue'
 import app from '@/components/settings/FirebaseConfig.vue'
-import { getAuth, onAuthStateChanged } from 'firebase/auth'
+import { getAuth, onAuthStateChanged, signOut } from 'firebase/auth'
 import router from './router';
 
 let drawer = ref(false)
@@ -15,7 +15,12 @@ let items = [
 
 const account = reactive({
   name: '未登入',
-  email: ''
+  email: '',
+})
+
+const status = reactive({
+  message: '請輸入帳號密碼',
+  status: 'info' as 'info' | 'error' | 'success' | 'warning' | undefined
 })
 
 const auth = getAuth(app)
@@ -34,8 +39,13 @@ const unsub = onAuthStateChanged(auth, (user) => {
 })
 
 provide(/* key */ 'account', /* value */ readonly(account))
+provide(/* key */ 'status', /* value */ status)
 
 function goAccount(){
+  router.push('/account')
+}
+async function signout(){
+  await signOut(auth)
   router.push('/account')
 }
 </script>
@@ -48,7 +58,7 @@ function goAccount(){
       <v-app-bar-title>Application bar</v-app-bar-title>
       <v-spacer></v-spacer>
       <v-btn variant="outlined" v-if="account.email === ''" @click="goAccount">請先登入</v-btn>
-      <v-btn variant="outlined" v-else-if="account.email != ''" @click="goAccount">登出</v-btn>
+      <v-btn variant="outlined" v-else-if="account.email != ''" @click="signout">登出</v-btn>
     </v-app-bar>
     <v-navigation-drawer floating permanent v-model="drawer">
       <v-list>

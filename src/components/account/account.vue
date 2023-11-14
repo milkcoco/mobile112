@@ -11,17 +11,14 @@ import { FirebaseError } from '@firebase/util'
 
 const account = reactive({
   email: '',
-  password: ''
+  password: '',
 })
 
-const state = reactive({
-  message: '請輸入帳號密碼',
-  status: 'info' as 'info' | 'error' | 'success' | 'warning' | undefined
-})
 
 const auth = getAuth(app)
 
 const login = inject('account', { name: '未登入', email: '' })
+const state = inject('status', { message: '請輸入帳號密碼', status: 'info' as 'info' | 'error' | 'success' | 'warning' | undefined})
 
 async function handleClick(status: 'signIn' | 'signUp' | 'signOut') {
   try {
