@@ -5,6 +5,7 @@ import { getAuth, onAuthStateChanged } from 'firebase/auth'
 
 let drawer = ref(false)
 let items = [
+{ title: '登入', to: '/account' },
   { title: '國文', to: '/chinese' },
   { title: '英文', to: '/english' },
   { title: '地理', to: '/geography' },
@@ -58,6 +59,7 @@ provide(/* key */ 'account', /* value */ readonly(account))
         <Biology v-else-if="choice.value === 'Biology'"/>
         <History v-else-if="choice.value === 'History'"/>
         <Geography v-else-if="choice.value === 'Geography'"/>
+        <Account v-else-if="choice.value === 'Account'"/>
         <Chinese v-else /> -->
       </Suspense>
     </v-main>
