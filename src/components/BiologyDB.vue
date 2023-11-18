@@ -22,10 +22,7 @@ async function generateQuestions() {
   state.exams = []
   const queryExam = query(examCollection, where('unit', '==', state.choice))
   const querySnapshot = await getDocs(queryExam)
-<<<<<<< HEAD
-=======
   state.answers.push([]);
->>>>>>> b00adf4a8c7c9c51ccd98bbf847064bb153abf18
   querySnapshot.forEach((doc) => {
     state.exams.push({
       question: doc.data().question,
@@ -78,10 +75,7 @@ function checkAnswers() {
     <v-select label="請選擇" v-model="state.choice" :items="units"> </v-select>
 
     <div v-for="(exam, index) in state.exams" :key="index">
-<<<<<<< HEAD
-=======
       <p>問題 {{ index+1 }}：</p>
->>>>>>> b00adf4a8c7c9c51ccd98bbf847064bb153abf18
       <v-text-field
         v-if="exam.type == 'blank'"
         v-model="state.answer[index]"
@@ -104,31 +98,15 @@ function checkAnswers() {
           <span v-for="option in exam.option" :key="option">
             <v-radio :label="option" :value="option"></v-radio>
           </span>
-<<<<<<< HEAD
-          <p>answer：{{ state.answer[index] }}</p>
-=======
->>>>>>> b00adf4a8c7c9c51ccd98bbf847064bb153abf18
         </v-radio-group>
       </p>
 
       <p v-if="exam.type === 'checkbox'">
-<<<<<<< HEAD
-      <p>{{ exam.question }} {{ state.answers[index] }}</p>
-      <span v-for="option in exam.option" :key="option">
-        <v-checkbox inline v-model="state.answers[index]" :label="option" :value="option" ></v-checkbox>
-      </span>
-        <!-- {{ exam.question }}
-        <span v-for="option in exam.option" :key="option">
-          <input type="checkbox" v-model="state.answers[index]" :value="option" />{{ option }}
-        </span> -->
-        {{ state.message[index] }}
-=======
       <p>{{ exam.question }} {{ state.message[index] }}</p>
       <span v-for="option in exam.option" :key="option">
         <v-checkbox inline v-model="state.answers[index]" :label="option" :value="option" ></v-checkbox>
       </span>
         
->>>>>>> b00adf4a8c7c9c51ccd98bbf847064bb153abf18
       </p>
     </div>
 
