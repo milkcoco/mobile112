@@ -4,13 +4,15 @@ import { collection, getDocs, getFirestore, where, query } from 'firebase/firest
 import app from '@/components/settings/FirebaseConfig.vue'
 
 let units = [
-  { title: '單元一 植物', value: 1 },
-  { title: '單元二 動物', value: 2 }
+  { title: '單元一 科學方法與生命現象', value: 1 },
+  { title: '單元二 細胞的構造', value: 2 },
+  { title: '單元三 物質進出細胞的方式', value: 3 },
+  { title: '單元四 生物體的組成層次', value: 4 }
 ]
 const state = reactive({
-  choice: { title: '單元一 植物', value: 1 },
+  choice: { title: '單元一 科學方法與生命現象', value: 1 },
   answer: [''],
-  answers: [[], []],
+  answers: [[]],
   message: [''],
   exams: [{ question: '', answer: '', answers: [''], option: [''], type: '' }]
 })
@@ -20,6 +22,10 @@ async function generateQuestions() {
   state.exams = []
   const queryExam = query(examCollection, where('unit', '==', state.choice))
   const querySnapshot = await getDocs(queryExam)
+<<<<<<< HEAD
+=======
+  state.answers.push([]);
+>>>>>>> b00adf4a8c7c9c51ccd98bbf847064bb153abf18
   querySnapshot.forEach((doc) => {
     state.exams.push({
       question: doc.data().question,
@@ -72,6 +78,10 @@ function checkAnswers() {
     <v-select label="請選擇" v-model="state.choice" :items="units"> </v-select>
 
     <div v-for="(exam, index) in state.exams" :key="index">
+<<<<<<< HEAD
+=======
+      <p>問題 {{ index+1 }}：</p>
+>>>>>>> b00adf4a8c7c9c51ccd98bbf847064bb153abf18
       <v-text-field
         v-if="exam.type == 'blank'"
         v-model="state.answer[index]"
@@ -94,11 +104,15 @@ function checkAnswers() {
           <span v-for="option in exam.option" :key="option">
             <v-radio :label="option" :value="option"></v-radio>
           </span>
+<<<<<<< HEAD
           <p>answer：{{ state.answer[index] }}</p>
+=======
+>>>>>>> b00adf4a8c7c9c51ccd98bbf847064bb153abf18
         </v-radio-group>
       </p>
 
       <p v-if="exam.type === 'checkbox'">
+<<<<<<< HEAD
       <p>{{ exam.question }} {{ state.answers[index] }}</p>
       <span v-for="option in exam.option" :key="option">
         <v-checkbox inline v-model="state.answers[index]" :label="option" :value="option" ></v-checkbox>
@@ -108,6 +122,13 @@ function checkAnswers() {
           <input type="checkbox" v-model="state.answers[index]" :value="option" />{{ option }}
         </span> -->
         {{ state.message[index] }}
+=======
+      <p>{{ exam.question }} {{ state.message[index] }}</p>
+      <span v-for="option in exam.option" :key="option">
+        <v-checkbox inline v-model="state.answers[index]" :label="option" :value="option" ></v-checkbox>
+      </span>
+        
+>>>>>>> b00adf4a8c7c9c51ccd98bbf847064bb153abf18
       </p>
     </div>
 

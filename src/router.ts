@@ -31,6 +31,11 @@ const router = createRouter({
       path: '/biology',
       name: 'biology',
       component: () => import('./components/BiologyDB.vue')
+    },
+    {
+      path: '/account',
+      name: 'account',
+      component: () => import('./components/account/Account.vue')
     }
   ]
 })
