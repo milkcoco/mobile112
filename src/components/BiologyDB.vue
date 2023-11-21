@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { reactive, watch } from 'vue'
+import { inject, reactive, watch } from 'vue'
 import { collection, getDocs, getFirestore, where, query } from 'firebase/firestore'
 import app from '@/components/settings/FirebaseConfig.vue'
 
@@ -11,6 +11,7 @@ let units = [
 ]
 const state = reactive({
   choice: { title: '單元一 科學方法與生命現象', value: 1 },
+  ing:'',
   answer: [''],
   answers: [[]],
   message: [''],
@@ -18,7 +19,8 @@ const state = reactive({
 })
 
 async function generateQuestions() {
-  // console.log(state.choice)
+  console.log(state.choice.title)
+  state.ing = state.choice.title
   state.exams = []
   const queryExam = query(examCollection, where('unit', '==', state.choice))
   const querySnapshot = await getDocs(queryExam)
@@ -40,9 +42,27 @@ const examCollection = collection(db, 'Biology')
 generateQuestions()
 watch(() => state.choice, generateQuestions)
 
+const account = reactive({
+  name: '',
+  unit: '',
+  questionNumber: 0
+})
+
+const appAccount = inject('account', { name: '未登入', email: '', unit: '', questionNumber: 0 })
+watch(appAccount, () => {
+  if (appAccount.email!== ""){
+    account.name = appAccount.name
+    // account.unit = appAccount.unit
+    // account.questionNumber = appAccount.questionNumber
+  }
+})
+
 function checkAnswers() {
+  console.log(state.ing)
+  // account.unit = units[state.choice.value].title;
   state.message = [] // clear previous messages
   for (let i in state.exams) {
+    account.questionNumber++;
     if (state.exams[i].type === 'blank' || state.exams[i].type === 'radio') {
       if (state.answer[i] !== state.exams[i].answer) {
         state.message[i] = '答案錯誤'
@@ -72,8 +92,12 @@ function checkAnswers() {
 </script>
 <template>
   <v-container>
+    <div v-if="account.name!==''">
+    你好，{{ account.name }} <br/>
+    你目前已完成的章節是：{{ account.unit }}，已答 {{ account.questionNumber }} 題
+    </div>
     <v-select label="請選擇" v-model="state.choice" :items="units"> </v-select>
-
+    
     <div v-for="(exam, index) in state.exams" :key="index">
       <p>問題 {{ index+1 }}：</p>
       <v-text-field

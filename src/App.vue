@@ -3,6 +3,7 @@ import { provide, reactive, readonly, ref } from 'vue'
 import app from '@/components/settings/FirebaseConfig.vue'
 import { getAuth, onAuthStateChanged } from 'firebase/auth'
 import router from './router'
+import { doc, getDoc, getFirestore } from 'firebase/firestore';
 
 let drawer = ref(false)
 let items = [
@@ -17,15 +18,31 @@ let items = [
 
 const account = reactive({
   name: '未登入',
-  email: ''
+  email: '',
+  password: '',
+  unit: '',
+  questionNumber: 0
 })
 
-const auth = getAuth(app)
-const unsub = onAuthStateChanged(auth, (user) => {
+const state = reactive({
+  message: '請輸入帳號密碼',
+  status: 'info' as 'info' | 'error' | 'success' | 'warning' | undefined,
+  action: 'signIn' as 'signUp' | 'signIn' | 'signOut'
+})
+
+const auth = getAuth(app);
+const db = getFirestore(app);
+const unsub = onAuthStateChanged(auth, async (user) => {
   if (user) {
-    account.name = '已登入'
+    account.name = '已登入';
     account.email = user.email ? user.email : ''
-    console.log(user)
+    const userDoc = await getDoc(doc(db, "user", user.uid));
+    if (userDoc.exists()) {
+      account.name = userDoc.data().name? userDoc.data().name:''
+    }
+    else{
+      account.name = '未登入'
+    }
   } else {
     account.name = '未登入'
     account.email = ''
@@ -36,6 +53,7 @@ const unsub = onAuthStateChanged(auth, (user) => {
 })
 
 provide(/* key */ 'account', /* value */ readonly(account))
+provide(/* key */ 'state', /* value */ state)
 
 function goAccount() {
   router.push('/account')
@@ -49,8 +67,8 @@ function goAccount() {
       <v-app-bar-nav-icon @click.stop="drawer = !drawer">menu</v-app-bar-nav-icon>
       <v-app-bar-title>Application bar</v-app-bar-title>
       <v-spacer></v-spacer>
-      <v-btn variant="outlined" v-if="account.email === ''" @click="goAccount">請先登入</v-btn>
-      <v-btn variant="outlined" v-else-if="account.email != ''" @click="goAccount">登出</v-btn>
+      <v-btn variant="outlined" v-if="account.email===''" @click="goAccount">請先登入</v-btn>
+      <v-btn variant="outlined" v-else @click="goAccount">登出</v-btn>
     </v-app-bar>
     <v-navigation-drawer floating permanent v-model="drawer">
       <v-list>
@@ -62,12 +80,6 @@ function goAccount() {
     <v-main class="d-flex flex-column align-start justify-start mb-6" style="min-height: 300px">
       <Suspense>
         <RouterView />
-        <!-- <English v-if="choice.value === 'English'" />
-        <Biology v-else-if="choice.value === 'Biology'"/>
-        <History v-else-if="choice.value === 'History'"/>
-        <Geography v-else-if="choice.value === 'Geography'"/>
-        <Account v-else-if="choice.value === 'Account'"/>
-        <Chinese v-else /> -->
       </Suspense>
     </v-main>
   </v-app>
