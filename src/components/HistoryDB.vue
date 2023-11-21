@@ -9,9 +9,10 @@ let units = [
 ]
 const state = reactive({
   choice: { title: '單元一 台灣歷史', value: 1 },
-  answer: [''],
+  answer: [],
+  answers: [[]],
   message: [''],
-  exams: [{ question: '', answer: '' }]
+  exams: [{ question: '', option: [], answer: '', type: '' }]
 })
 
 async function generateQuestions() {
@@ -20,7 +21,13 @@ async function generateQuestions() {
   const queryExam = query(examCollection, where('unit', '==', state.choice))
   const querySnapshot = await getDocs(queryExam)
   querySnapshot.forEach((doc) => {
-    state.exams.push({ question: doc.data().question, answer: doc.data().answer })
+    state.answers.push([])
+    state.exams.push({
+      question: doc.data().question,
+      option: doc.data().option,
+      answer: doc.data().answer,
+      type: doc.data().type
+    })
   })
 }
 
@@ -42,22 +49,46 @@ watch(() => state.choice, generateQuestions)
 // function generateQuestion() {
 //   if (exams[state.currentQuestion].answer === answer) {
 //     state.message = "答案正確";
-//     if (state.currentQuestion + 1 < exams.length) {
+//    if (state.currentQuestion + 1 < exams.length) {
 //       state.currentQuestion++;
 //     }
 //   } else {
 //     state.message = "答案錯誤";
 //   }
 // }
-// generateQuestion();
+//generateQuestion();
 
 function checkAnswers() {
   state.message = [] // clear previous messages
   for (let i in state.exams) {
-    if (state.answer[i] !== state.exams[i].answer) {
-      state.message[i] = '不正確'
+    if (state.exams[i].type == 'random') {
+      if (state.answer[i] !== state.exams[i].answer) {
+        state.message[i] = '不正確'
+      } else {
+        state.message[i] = '正確'
+      }
     } else {
-      state.message[i] = '正確'
+      // console.log("multiple")
+      // console.log(state.exams[i].answer.length)
+      // console.log(state.answers[i].length)
+
+      if (state.exams[i].answer.length === state.answers[i].length) {
+        let correct = 0
+        for (var item of state.answers[i]) {
+          if (state.exams[i].answer.includes(item)) {
+            correct++
+          }
+        }
+        // console.log(correct)
+        if (correct == state.exams[i].answer.length) {
+          state.message[i] = '答案正確'
+        } else {
+          state.message[i] = '答案錯誤'
+        }
+      } else {
+        state.message[i] = '答案錯誤'
+        console.log("error")
+      }
     }
   }
 }
@@ -66,12 +97,23 @@ function checkAnswers() {
   <v-container>
     <v-select label="請選擇" v-model="state.choice" :items="units"> </v-select>
     <div v-for="(exam, index) in state.exams" :key="index">
-      <v-text-field
-        v-model="state.answer[index]"
-        :label="exam.question"
-        :messages="state.message[index]"
-      ></v-text-field>
+      {{ state.exams[index].question }}
+      <div v-if="state.exams[index].type == 'random'">
+        <v-text-field
+          v-model="state.answer[index]"
+          :label="exam.question"
+          :messages="state.message[index]"
+        ></v-text-field>
+      </div>
+      <div v-else>
+        <span v-for="option in exam.option" :key="option">
+          <input type="checkbox" v-model="state.answers[index]" :value="option" />
+          {{ option }}
+        </span>
+        {{ state.message[index] }}
+      </div>
     </div>
+
     <v-btn color="primary" @click="checkAnswers">檢查答案</v-btn>
   </v-container>
 </template>
