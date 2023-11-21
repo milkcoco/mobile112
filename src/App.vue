@@ -3,6 +3,7 @@ import { provide, reactive, readonly, ref } from 'vue'
 import app from '@/components/settings/FirebaseConfig.vue'
 import { getAuth, onAuthStateChanged } from 'firebase/auth'
 import router from './router'
+import { doc, getDoc, getFirestore } from 'firebase/firestore';
 
 let drawer = ref(false)
 let items = [
@@ -21,19 +22,28 @@ const account = reactive({
 })
 
 const auth = getAuth(app)
-const unsub = onAuthStateChanged(auth, (user) => {
+const db = getFirestore(app)
+const unsub = onAuthStateChanged(auth, async(user) => {
   if (user) {
     account.name = '已登入'
     account.email = user.email ? user.email : ''
-    console.log(user)
-  } else {
-    account.name = '未登入'
-    account.email = ''
-  }
-  return () => {
-    unsub()
-  }
-})
+    const userDoc = await getDoc(doc(db, "user", user.uid));
+
+if (userDoc.exists()) {
+  account.name = userDoc.data().name? userDoc.data().name:''
+}
+else{
+  account.name = '未登入'
+}
+}
+else{
+account.name='未登入'
+account.email = ''
+}
+return () => {
+unsub();
+}}
+);
 
 provide(/* key */ 'account', /* value */ readonly(account))
 
