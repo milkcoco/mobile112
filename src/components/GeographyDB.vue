@@ -12,6 +12,8 @@ const state = reactive({
   answer: [''],
   answers: [[], []],
   message: [''],
+  correct:0,
+  m:"",
   exams: [{ question: '', answer: '', answers: [''], options: [''], type: '' }]
 })
 
@@ -40,12 +42,14 @@ watch(() => state.choice, generateQuestions)
 
 function checkAnswers() {
   state.message = [] // clear previous messages
+  state.correct=0
   for (let i in state.exams) {
     if (state.exams[i].type === 'blank' || state.exams[i].type === 'radio') {
       if (state.answer[i] !== state.exams[i].answer) {
         state.message[i] = '答案錯誤'
       } else {
         state.message[i] = '答案正確'
+        state.correct ++
       }
     }
     if (state.exams[i].type === 'checkbox') {
@@ -58,6 +62,7 @@ function checkAnswers() {
         }
         if (correct == state.exams[i].answers.length) {
           state.message[i] = '答案正確'
+          state.correct ++
         } else {
           state.message[i] = '答案錯誤'
         }
@@ -66,7 +71,10 @@ function checkAnswers() {
       }
     }
   }
+  state.m='已完成該測驗'
 }
+
+
 </script>
 <template>
   <v-container>
@@ -104,9 +112,12 @@ function checkAnswers() {
         <v-checkbox inline v-model="state.answers[index]" :label="options" :value="options" ></v-checkbox>
       </span>
         {{ state.message[index] }}
+        
     </div>
     </div>
 
     <v-btn color="primary" @click="checkAnswers">檢查答案</v-btn>
+    <p>{{ '答對' }}{{ state.correct }}  {{ '題' }}</p>
+    {{ state.m }}
   </v-container>
 </template>
