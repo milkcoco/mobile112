@@ -3,7 +3,7 @@ import { inject, reactive, watch } from 'vue'
 import app from '@/components/settings/FirebaseConfig.vue'
 import { signInWithEmailAndPassword, createUserWithEmailAndPassword, getAuth, signOut } from 'firebase/auth'
 import { FirebaseError } from '@firebase/util'
-import { doc, getDoc, getFirestore, setDoc } from 'firebase/firestore';
+import { doc, getDoc, getFirestore, increment, setDoc, updateDoc } from 'firebase/firestore';
 
 const account = reactive({
   name: '',
@@ -60,6 +60,7 @@ async function handleClick(status: 'signIn' | 'signUp' | 'signOut') {
         state.action = 'signOut'
         state.status = 'success'
         state.message = account.email + '登入成功'
+        await updateDoc(doc(db, "user", uid),{loginCount:increment(1)});
       }
     } else {
       state.message = '登出中...'
