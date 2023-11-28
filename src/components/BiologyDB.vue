@@ -1,7 +1,21 @@
 <script setup lang="ts">
 import { inject, reactive, watch } from 'vue'
-import { collection, getDocs, getFirestore, where, query } from 'firebase/firestore'
+import { collection, getDocs, getFirestore, where, query, updateDoc, doc, arrayUnion } from 'firebase/firestore'
 import app from '@/components/settings/FirebaseConfig.vue'
+
+const login = inject('account', { name: '未登入', email: '', id: '', unit: '', questionNumber: 0 })
+const account = reactive({
+  name: login.name,
+  unit: login.unit,
+  questionNumber: login.questionNumber
+})
+watch(login, () => {
+  if (login.email!== ""){
+    account.name = login.name
+    // account.unit = appAccount.unit
+    // account.questionNumber = appAccount.questionNumber
+  }
+})
 
 let units = [
   { title: '單元一 科學方法與生命現象', value: 1 },
@@ -42,24 +56,11 @@ const examCollection = collection(db, 'Biology')
 generateQuestions()
 watch(() => state.choice, generateQuestions)
 
-const account = reactive({
-  name: '',
-  unit: '',
-  questionNumber: 0
-})
-
-const appAccount = inject('account', { name: '未登入', email: '', unit: '', questionNumber: 0 })
-watch(appAccount, () => {
-  if (appAccount.email!== ""){
-    account.name = appAccount.name
-    // account.unit = appAccount.unit
-    // account.questionNumber = appAccount.questionNumber
-  }
-})
-
-function checkAnswers() {
-  console.log(state.ing)
-  // account.unit = units[state.choice.value].title;
+async function checkAnswers() {
+  await updateDoc(doc(db, "user", login.id), {
+    subjects: arrayUnion("生物")
+});
+  
   state.message = [] // clear previous messages
   for (let i in state.exams) {
     account.questionNumber++;
@@ -93,8 +94,7 @@ function checkAnswers() {
 <template>
   <v-container>
     <div v-if="account.name!==''">
-    你好，{{ account.name }} <br/>
-    你目前已完成的章節是：{{ account.unit }}，已答 {{ account.questionNumber }} 題
+    你好，{{ account.name }} 你已答 {{ account.questionNumber }} 題
     </div>
     <v-select label="請選擇" v-model="state.choice" :items="units"> </v-select>
     

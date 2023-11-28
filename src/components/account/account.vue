@@ -5,31 +5,31 @@ import { signInWithEmailAndPassword, createUserWithEmailAndPassword, getAuth, si
 import { FirebaseError } from '@firebase/util'
 import { doc, getDoc, getFirestore, setDoc } from 'firebase/firestore';
 
-const account = reactive({
-  name: '',
-  email: '',
-  password: '',
-  unit:'',
-  questionNumber:0
-})
-
 const auth = getAuth(app);
 const db = getFirestore(app);
 
-const appAccount = inject('account', { name: '未登入', email: '', password: '' })
-watch(appAccount, () => {
-  if (appAccount.email!== ""){
-    account.email = appAccount.email
-    account.name = appAccount.name
-    state.action = 'signOut'
-  }
-})
-
+const login = inject('account', { name: '未登入', email: '', password: '' })
 const state = inject('state', { 
   message: '請輸入帳號密碼', 
   status: 'info' as 'info' | 'error' | 'success' | 'warning' | undefined,
   action: 'signIn' as 'signUp' | 'signIn' | 'signOut'
 })
+
+const account = reactive({
+  name: login.name,
+  email: '',
+  password: '',
+  unit:'',
+  questionNumber:0
+})
+watch(login, () => {
+  if (login.email!== ""){
+    account.email = login.email
+    account.name = login.name
+    state.action = 'signOut'
+  }
+})
+
 
 async function handleClick(status: 'signIn' | 'signUp' | 'signOut') {
   try {
@@ -66,6 +66,9 @@ async function handleClick(status: 'signIn' | 'signUp' | 'signOut') {
       await signOut(auth)
       state.action = 'signIn'
       state.status = 'success'
+      account.name = '未登入'
+      account.email = ''
+      account.password = ''
       state.message = '登出成功'
     }
   } catch (e) {

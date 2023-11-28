@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { provide, reactive, readonly, ref } from 'vue'
+import { provide, reactive, readonly, ref, watch } from 'vue'
 import app from '@/components/settings/FirebaseConfig.vue'
 import { getAuth, onAuthStateChanged } from 'firebase/auth'
 import router from './router'
@@ -12,16 +12,20 @@ let items = [
   { title: '英文', to: '/english' },
   { title: '地理', to: '/geography' },
   { title: '歷史', to: '/history' },
-  { title: '生物', to: '/biology' }
+  { title: '生物', to: '/biology' },
+  { title: '個人資料', to: '/profile' }
   // { title: '生物測驗', to: '/biology' }
 ]
 
 const account = reactive({
   name: '未登入',
   email: '',
+  id: '',
   password: '',
   unit: '',
-  questionNumber: 0
+  questionNumber: 0,
+  loginCount: 0,
+  subjects: ''
 })
 
 const state = reactive({
@@ -36,9 +40,12 @@ const unsub = onAuthStateChanged(auth, async (user) => {
   if (user) {
     account.name = '已登入';
     account.email = user.email ? user.email : ''
+    account.id = user.uid
     const userDoc = await getDoc(doc(db, "user", user.uid));
     if (userDoc.exists()) {
       account.name = userDoc.data().name? userDoc.data().name:''
+      account.loginCount = userDoc.data().loginCount
+      account.subjects = userDoc.data().subjects
     }
     else{
       account.name = '未登入'
