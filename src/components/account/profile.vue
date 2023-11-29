@@ -5,22 +5,30 @@ import app from '@/components/settings/FirebaseConfig.vue'
 import { FirebaseError } from '@firebase/util';
 
 const db = getFirestore(app);
-const login = inject('account', { name: '未登入', email: '', id:''  })
+const login = inject('account', { name: '未登入', email: '', id:'', loginCount: 0, subjects: '' })
 const account = reactive({
   name: login.name,
+  loginCount: login.loginCount,
+  subjects: login.subjects
 })
 
 watch(login, () => {
   if (login.email!== ""){
-    account.name = login.name
+    account.name = login.name,
+    account.loginCount = login.loginCount,
+    account.subjects = login.subjects
+  } else {
+    account.name = '未登入',
+    account.loginCount = 0,
+    account.subjects = ''
   }
   },{ 
     immediate: true
-
   })
   const state = reactive({
   message: '',
 })
+
 async function handleClick(){
   if (login.id === '') {
     state.message = '尚未登入無法更新'
@@ -48,5 +56,31 @@ async function handleClick(){
     {{ state.message }}
     <v-btn color="primary" @click="handleClick">更新</v-btn>
     <v-btn color="secondary" >回首頁</v-btn>    
+
+    <v-card class="mx-auto mt-5" variant="outlined">
+      <v-card-item>
+        <v-card-title>
+          學習進度
+        </v-card-title>
+        <v-card-subtitle>
+          距離你上次登入......
+        </v-card-subtitle>
+      </v-card-item>
+
+      <v-card-text>
+        <div class="text-body-1 mb-2">
+          已完成的科目：{{ account.subjects }}
+        </div>
+        <div class="text-body-1">
+          已完成的單元：
+        </div>
+        
+      </v-card-text>
+      <v-card-actions>
+        <v-btn>
+          登入次數：{{ account.loginCount }}
+        </v-btn>
+      </v-card-actions>
+    </v-card>
   </v-container>
 </template>
