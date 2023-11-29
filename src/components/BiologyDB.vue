@@ -3,17 +3,15 @@ import { inject, reactive, watch } from 'vue'
 import { collection, getDocs, getFirestore, where, query, updateDoc, doc, arrayUnion } from 'firebase/firestore'
 import app from '@/components/settings/FirebaseConfig.vue'
 
-const login = inject('account', { name: '未登入', email: '', id: '', unit: '', questionNumber: 0 })
+const login = inject('account', { name: '未登入', email: '', id: '', questionNumber: 0 })
 const account = reactive({
   name: login.name,
-  unit: login.unit,
   questionNumber: login.questionNumber
 })
+
 watch(login, () => {
   if (login.email!== ""){
     account.name = login.name
-    // account.unit = appAccount.unit
-    // account.questionNumber = appAccount.questionNumber
   }
 })
 
@@ -59,7 +57,7 @@ watch(() => state.choice, generateQuestions)
 async function checkAnswers() {
   await updateDoc(doc(db, "user", login.id), {
     subjects: arrayUnion("生物")
-});
+  });
   
   state.message = [] // clear previous messages
   for (let i in state.exams) {
@@ -108,12 +106,6 @@ async function checkAnswers() {
       ></v-text-field>
 
       <p v-if="exam.type === 'radio'">
-        <!-- {{ exam.question }}
-        <span v-for="option in exam.option" :key="option">
-          <input type="radio" v-model="state.answer[index]" :label="option" :value="option" />
-          {{ option }}
-        </span>
-        {{ state.message[index] }} -->
         <v-radio-group
           :label="exam.question"
           :messages="state.message[index]"
@@ -126,11 +118,10 @@ async function checkAnswers() {
       </p>
 
       <p v-if="exam.type === 'checkbox'">
-      <p>{{ exam.question }} {{ state.message[index] }}</p>
-      <span v-for="option in exam.option" :key="option">
-        <v-checkbox inline v-model="state.answers[index]" :label="option" :value="option" ></v-checkbox>
-      </span>
-        
+        <p>{{ exam.question }} {{ state.message[index] }}</p>
+        <span v-for="option in exam.option" :key="option">
+          <v-checkbox inline v-model="state.answers[index]" :label="option" :value="option" ></v-checkbox>
+        </span>
       </p>
     </div>
 

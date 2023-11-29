@@ -19,9 +19,8 @@ const account = reactive({
   name: login.name,
   email: '',
   password: '',
-  unit:'',
-  questionNumber:0
 })
+
 watch(login, () => {
   if (login.email!== ""){
     account.email = login.email
@@ -29,7 +28,6 @@ watch(login, () => {
     state.action = 'signOut'
   }
 })
-
 
 async function handleClick(status: 'signIn' | 'signUp' | 'signOut') {
   try {
@@ -41,8 +39,6 @@ async function handleClick(status: 'signIn' | 'signUp' | 'signOut') {
       const uid = res.user.uid;
       await setDoc(doc(db, "user", uid), {
         name: storeName,
-        unit: account.unit,
-        questionNumber: account.questionNumber 
       });
       if (res.user) {
         state.status = 'success'
@@ -129,15 +125,15 @@ async function handleClick(status: 'signIn' | 'signUp' | 'signOut') {
     <v-text-field v-model="account.password" label="密碼" type="password"></v-text-field>
     <v-alert :type="state.status" title="訊息" :text="state.message"></v-alert>
 
-    <div v-if="state.action==='signIn'">
+    <div class="mt-2" v-if="state.action==='signIn'">
       <v-btn color="primary" @click="handleClick('signIn')">登入</v-btn>
       <v-btn color="secondary" @click="()=>state.action = 'signUp'">我要註冊</v-btn>
     </div>
-    <div v-else-if="state.action==='signUp'">
+    <div class="mt-2" v-else-if="state.action==='signUp'">
       <v-btn color="primary" @click="handleClick('signUp')">註冊</v-btn>
       <v-btn color="secondary" @click="()=>state.action = 'signIn'">我要登入</v-btn>
     </div>
-    <div v-else>
+    <div  class="mt-2" v-else>
       <v-btn color="secondary" @click="handleClick('signOut')">登出</v-btn>
     </div>
   </v-container>

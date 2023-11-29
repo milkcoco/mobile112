@@ -7,14 +7,12 @@ import { doc, getDoc, getFirestore } from 'firebase/firestore';
 
 let drawer = ref(false)
 let items = [
-  { title: '登入', to: '/account' },
-  { title: '更名', to: '/Profile'},
+  { title: '個人資料', to: '/profile' },
   { title: '國文', to: '/chinese' },
   { title: '英文', to: '/english' },
   { title: '地理', to: '/geography' },
   { title: '歷史', to: '/history' },
   { title: '生物', to: '/biology' },
-  { title: '個人資料', to: '/profile' }
   // { title: '生物測驗', to: '/biology' }
 ]
 
@@ -23,10 +21,9 @@ const account = reactive({
   email: '',
   id: '',
   password: '',
-  unit: '',
-  questionNumber: 0,
   loginCount: 0,
-  subjects: ''
+  subjects: '',
+  questionNumber: 0
 })
 
 const state = reactive({
@@ -34,6 +31,9 @@ const state = reactive({
   status: 'info' as 'info' | 'error' | 'success' | 'warning' | undefined,
   action: 'signIn' as 'signUp' | 'signIn' | 'signOut'
 })
+
+provide(/* key */ 'account', /* value */ readonly(account))
+provide(/* key */ 'state', /* value */ state)
 
 const auth = getAuth(app);
 const db = getFirestore(app);
@@ -59,9 +59,6 @@ const unsub = onAuthStateChanged(auth, async (user) => {
     unsub()
   }
 })
-
-provide(/* key */ 'account', /* value */ readonly(account))
-provide(/* key */ 'state', /* value */ state)
 
 function goAccount() {
   router.push('/account')
