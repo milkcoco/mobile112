@@ -115,7 +115,9 @@ async function checkAnswers() {
         {{ state.message[index] }}
       </div>
     </div>
+    <v-alert color="info" icon="$info" title="檢查結果">
     共答對{{ state.correct }}題 / 答錯{{ state.incorrectCount  }}題
+  </v-alert>
     <v-btn color="primary" @click="checkAnswers">檢查答案</v-btn>
   </v-container>
 </template>
