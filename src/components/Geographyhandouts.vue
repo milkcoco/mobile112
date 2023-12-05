@@ -96,53 +96,15 @@ async function checkAnswers() {
 
 
 </script>
+
 <template>
-  <v-container>
-    {{ account.name }}
-    <v-select label="請選擇" v-model="state.choice" :items="units"> </v-select>
-    
-    <div v-for="(exam, index) in state.exams" :key="index">
-      <v-text-field
-        v-if="exam.type == 'blank'"
-        v-model="state.answer[index]"
-        :label="exam.question"
-        :messages="state.message[index]"
-      ></v-text-field>
-    
-
-      <p v-if="exam.type === 'radio'">
-        <!-- {{ exam.question }}
-        <span v-for="option in exam.option" :key="option">
-          <input type="radio" v-model="state.answer[index]" :label="option" :value="option" />
-          {{ option }}
-        </span>
-        {{ state.message[index] }} -->
-        <v-radio-group
-          :label="exam.question"
-          :messages="state.message[index]"
-          v-model="state.answer[index]"
-        >
-          <span v-for="option in exam.options" :key="option">
-            <v-radio :label="option" :value="option"></v-radio>
-          </span>
-        </v-radio-group>
-      </p>
-
-      <div v-if="exam.type === 'checkbox'">
-      <p>{{ exam.question }}</p>
-      <span v-for="options in exam.options" :key="options">
-        <v-checkbox inline v-model="state.answers[index]" :label="options" :value="options" ></v-checkbox>
-      </span>
-        {{ state.message[index] }}
-        <v-alert color="info" icon="$info" title="檢查結果">
-      共答對{{ state.correctCount }}題 / 答錯{{ state.incorrectCount  }}題
-    </v-alert>
-    </div>
-    </div>
-
-    <v-btn color="primary" @click="checkAnswers">檢查答案</v-btn>
-    <v-btn color="secondary" @click="$router.push('/geographyhandouts')" >重新複習</v-btn>
-
-  </v-container>
-
+<div style="position: relative; width: 100%; height: 0; padding-top: 56.2500%;
+ padding-bottom: 0; box-shadow: 0 2px 8px 0 rgba(63,69,81,0.16); margin-top: 1.6em; margin-bottom: 0.9em; overflow: hidden;
+ border-radius: 8px; will-change: transform;">
+  <iframe loading="lazy" style="position: absolute; width: 100%; height: 100%; top: 0; left: 0; border: none; padding: 0;margin: 0;"
+    src="https:&#x2F;&#x2F;www.canva.com&#x2F;design&#x2F;DAF0xqRxlnc&#x2F;view?embed"  allow="fullscreen">
+  </iframe>
+</div>
+范莛莙 設計的 <a href="https:&#x2F;&#x2F;www.canva.com&#x2F;design&#x2F;DAF0xqRxlnc&#x2F;view?utm_content=DAF0xqRxlnc&amp;utm_campaign=designshare&amp;utm_medium=embeds&amp;utm_source=link" target="_blank" rel="noopener">Geography</a>
+<v-btn color="secondary" @click="$router.push('/geographyhandouts')" >前往測驗</v-btn>
 </template>
