@@ -1,8 +1,9 @@
 <script setup lang="ts">
 import { inject, reactive, watch } from 'vue'
-import { collection, getDocs, getFirestore, where, query, arrayUnion } from 'firebase/firestore'
+import { collection, getDocs, getFirestore, where, query, arrayUnion, addDoc } from 'firebase/firestore'
 import app from '@/components/settings/FirebaseConfig.vue'
 import { doc, updateDoc } from 'firebase/firestore';
+//import Account from './account/account.vue';
 
 let units = [
   { title: '單元一 水果', value: 1 },
@@ -14,7 +15,8 @@ const state = reactive({
   answers: [[]],
   correct:0,
   message: [''],
-  exams: [{ question: '', option: [], answer: '', type: '' }]
+  exams: [{ question: '', option: [], answer: '', type: '' }],
+  incorrectCount :0,
 })
 const appAccount = inject('account', { name: '未登入', email: '', password: '',id:"" })
 async function generateQuestions() {
@@ -44,11 +46,13 @@ async function checkAnswers() {
 
   state.message = [] // clear previous messages
   state.correct =0
+  state.incorrectCount=0
 
   for (let i in state.exams) {
     if (state.exams[i].type == 'random') {
       if (state.answer[i] !== state.exams[i].answer) {
         state.message[i] = '不正確'
+        state.incorrectCount++
       } else {
         state.message[i] = '正確'
         state.correct++
@@ -68,15 +72,24 @@ async function checkAnswers() {
           state.correct++
         } else {
           state.message[i] = '答案錯誤'
+          state.incorrectCount++
         }
       } else {
         state.message[i] = '答案錯誤'
+        state.incorrectCount++
         console.log("error")
       }
     }
+    
   }
   await updateDoc(doc(db,"user",appAccount.id),{subjects:arrayUnion("English")})
-  await updateDoc(doc(db,"user",appAccount.id),{subjects:arrayUnion("English "+state.choice)})
+  await updateDoc(doc(db,"user",appAccount.id),{unit:arrayUnion("English "+state.choice)})
+  await addDoc(collection(db,"user/"+appAccount.id+"/record"),
+  {subject:"English",
+  unit:state.choice,
+    correctCount: state.correct,
+   incorrectCount: state.incorrectCount,
+  date: new Date()})
 }
 
 
@@ -102,7 +115,9 @@ async function checkAnswers() {
         {{ state.message[index] }}
       </div>
     </div>
-    答對{{ state.correct }}題
+    <v-alert color="info" icon="$info" title="檢查結果">
+    共答對{{ state.correct }}題 / 答錯{{ state.incorrectCount  }}題
+  </v-alert>
     <v-btn color="primary" @click="checkAnswers">檢查答案</v-btn>
   </v-container>
 </template>
