@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import { reactive, watch } from 'vue'
-import { collection, getDocs, getFirestore, where, query } from 'firebase/firestore'
+import { inject ,reactive, watch } from 'vue'
+import { collection, getDocs, getFirestore, where, query, updateDoc ,addDoc ,doc,arrayUnion } from 'firebase/firestore'
 import app from '@/components/settings/FirebaseConfig.vue'
 
 let units = [
@@ -8,13 +8,15 @@ let units = [
   { title: '單元二 判斷季節', value: 2 }
 ]
 const state = reactive({
+  correctCount :0,
+  incorrectCount :0,
   choice: { title: '單元一 判斷錯字', value: 1 },
   answer: [],
   answers: [[]],
   message: [''],
   exams: [{ question: '', option: [], answer: '', type: '' }]
 })
-
+const appAccount = inject('account',{name:'未登入',email:'',password:'',id:""})
 async function generateQuestions() {
   console.log(state.choice)
   state.exams = []
@@ -58,14 +60,18 @@ watch(() => state.choice, generateQuestions)
 // }
 //generateQuestion();
 
-function checkAnswers() {
+async function checkAnswers() {
   state.message = [] // clear previous messages
+  state.correctCount=0
+  state.incorrectCount=0
   for (let i in state.exams) {
     if (state.exams[i].type == 'random') {
       if (state.answer[i] !== state.exams[i].answer) {
         state.message[i] = '不正確'
+        state.incorrectCount++
       } else {
         state.message[i] = '正確'
+        state.correctCount++
       }
     } else {
       // console.log("multiple")
@@ -82,15 +88,26 @@ function checkAnswers() {
         // console.log(correct)
         if (correct == state.exams[i].answer.length) {
           state.message[i] = '答案正確'
+          state.correctCount++
         } else {
           state.message[i] = '答案錯誤'
+          state.incorrectCount++
         }
       } else {
         state.message[i] = '答案錯誤'
+        state.incorrectCount++
         console.log("error")
       }
     }
   }
+  await updateDoc(doc(db,"user",appAccount.id),{subject:arrayUnion("Chinese")})
+  await updateDoc(doc(db,"user",appAccount.id),{unit:arrayUnion("Chinese"+state.choice)})
+  await addDoc(collection(db,"user/"+appAccount.id+"/record"),
+  {subject:"Chinese",
+unit:state.choice,
+correctCount: state.correctCount,
+incorrectCount:state.incorrectCount,
+date: new Date()})
 }
 </script>
 <template>
@@ -113,7 +130,9 @@ function checkAnswers() {
         {{ state.message[index] }}
       </div>
     </div>
-
+    <v-alert color="info" icon="$info" title="檢查結果">
+      共答對{{ state.correctCount }}題 / 答錯{{ state.incorrectCount  }}題
+    </v-alert>
     <v-btn color="primary" @click="checkAnswers">檢查答案</v-btn>
   </v-container>
 </template>

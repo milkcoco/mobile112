@@ -4,6 +4,11 @@ const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
     {
+      path: '/profile',
+      name: 'profile',
+      component: () => import('./components/account/Profile.vue')
+    },
+    {
       path: '/chinese',
       name: 'chinese',
       // component: EnglishDB
