@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { inject, reactive, watch } from 'vue';
-import { doc, getFirestore, updateDoc } from 'firebase/firestore';
+import { doc, getFirestore, updateDoc ,deleteField } from 'firebase/firestore';
 import app from '@/components/settings/FirebaseConfig.vue'
 import { FirebaseError } from '@firebase/util';
 
@@ -49,14 +49,22 @@ async function handleClick(){
     }
   }
 }
+
+async function deleteDoc(){
+  const userRef = doc(db, "user", login.id);
+    await updateDoc(userRef, {
+      loginCount: deleteField()
+    });
+
+}
 </script>
 <template>
   <v-container>
     <v-text-field v-model=account.name label="姓名"></v-text-field>
     {{ state.message }}
     <v-btn color="primary" @click="handleClick">更新</v-btn>
-    <v-btn color="secondary" >回首頁</v-btn>    
-
+    <v-btn color="secondary" >回首頁</v-btn>
+    <v-btn color="secondary" @click="deleteDoc" >刪除</v-btn>       
     <v-card class="mx-auto mt-5" variant="outlined">
       <v-card-item>
         <v-card-title>
