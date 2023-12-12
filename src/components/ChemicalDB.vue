@@ -17,10 +17,8 @@ watch(login, () => {
 })
 
 let units = [
-  { title: '單元一 科學方法與生命現象', value: 1 },
-  { title: '單元二 細胞的構造', value: 2 },
-  { title: '單元三 物質進出細胞的方式', value: 3 },
-  { title: '單元四 生物體的組成層次', value: 4 }
+  { title: '單元一 原子量、分子量與莫耳', value: 1 },
+  { title: '單元二 反應式與化學計量', value: 2 },
 ]
 const state = reactive({
   choice: 1,
@@ -33,7 +31,7 @@ const state = reactive({
 })
 //點選select時，會改變state.choice，利用watch，當state.choice改變時，重新讀取題目
 const db = getFirestore(app)
-const examCollection = collection(db, 'Biology')
+const examCollection = collection(db, 'Chemical')
 generateQuestions()
 
 watch(() => state.choice, generateQuestions)
@@ -92,7 +90,7 @@ async function checkAnswers() {
   }
   await addDoc(collection(db, "user/" + account.id + "/record"),
     {
-      subject: "Biology",
+      subject: "Chemical",
       unit: state.choice,
       correctCount: state.correctCount,
       incorrectCount: state.incorrectCount,

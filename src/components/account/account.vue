@@ -1,45 +1,44 @@
 <script setup lang="ts">
-import { inject, reactive, watch} from 'vue';
-import app from '@/components/settings/FirebaseConfig.vue';
-import {
-  signInWithEmailAndPassword,
-  createUserWithEmailAndPassword,
-  getAuth,
-  signOut
-} from 'firebase/auth'
-import { FirebaseError } from '@firebase/util';
-import { doc, getDoc, getFirestore, setDoc } from 'firebase/firestore';
+import { inject, reactive, watch } from 'vue'
+import app from '@/components/settings/FirebaseConfig.vue'
+import { signInWithEmailAndPassword, createUserWithEmailAndPassword, getAuth, signOut } from 'firebase/auth'
+import { FirebaseError } from '@firebase/util'
+import { doc, getDoc, getFirestore, increment, setDoc, updateDoc } from 'firebase/firestore';
 
+const auth = getAuth(app);
+const db = getFirestore(app);
 
-const Account = reactive({
-  name:'',
-  email: '',
-  password: ''
-})
-
-const state = reactive({
-  message: '請輸入帳號密碼',
+const login = inject('account', { name: '未登入', email: '', password: '' })
+const state = inject('state', { 
+  message: '請輸入帳號密碼', 
   status: 'info' as 'info' | 'error' | 'success' | 'warning' | undefined,
   action: 'signIn' as 'signUp' | 'signIn' | 'signOut'
 })
 
-const auth = getAuth(app)
-const db = getFirestore(app);
-
-const login = inject('account', { name: '未登入', email: '' })
 const account = reactive({
-  name:login.name,
+  name: login.name,
+  email: '',
+  password: '',
+})
+
+watch(login, () => {
+  if (login.email!== ""){
+    account.email = login.email
+    account.name = login.name
+    state.action = 'signOut'
+  }
 })
 
 async function handleClick(status: 'signIn' | 'signUp' | 'signOut') {
   try {
     state.status = 'info'
     if (status === 'signUp') {
+      const storeName = account.name
       state.message = '註冊中...'
-      const res = await createUserWithEmailAndPassword(auth, Account.email, Account.password)
+      const res = await createUserWithEmailAndPassword(auth, account.email, account.password)
       const uid = res.user.uid;
       await setDoc(doc(db, "user", uid), {
-        name: account.name
+        name: storeName,
       });
       if (res.user) {
         state.status = 'success'
@@ -47,7 +46,7 @@ async function handleClick(status: 'signIn' | 'signUp' | 'signOut') {
       }
     } else if (status === 'signIn') {
       state.message = '登入中...'
-      const res = await signInWithEmailAndPassword(auth, Account.email, Account.password)
+      const res = await signInWithEmailAndPassword(auth, account.email, account.password)
       const uid = res.user.uid;
       const userDoc = await getDoc(doc(db, "user", uid));
       if (res.user) {
@@ -56,13 +55,17 @@ async function handleClick(status: 'signIn' | 'signUp' | 'signOut') {
         }
         state.action = 'signOut'
         state.status = 'success'
-        state.message = login.email + '登入成功'
+        state.message = account.email + '登入成功'
+        await updateDoc(doc(db, "user", uid),{loginCount:increment(1)});
       }
     } else {
       state.message = '登出中...'
       await signOut(auth)
       state.action = 'signIn'
       state.status = 'success'
+      account.name = '未登入'
+      account.email = ''
+      account.password = ''
       state.message = '登出成功'
     }
   } catch (e) {
@@ -108,30 +111,29 @@ async function handleClick(status: 'signIn' | 'signUp' | 'signOut') {
     }
   }
 }
+
+
+
 </script>
 <template>
   <v-container>
     <v-text-field v-if="state.action=='signUp'" v-model="account.name" label="姓名"></v-text-field>
-    <div v-else>
-    {{ account.name }}
+    <div v-if="state.action=='signOut'">
+    你好，{{ account.name }}
     </div>
-    <div v-if="state.action!=='signOut'">
-      <v-text-field v-model=login.name label="姓名"></v-text-field>
-    <v-btn color="primary" >更新</v-btn>
-    <v-btn color="secondary" >回首頁</v-btn> 
-      <v-text-field v-model="Account.email" label="帳號"></v-text-field>
-      <v-text-field v-model="Account.password" label="密碼" type="password"></v-text-field>
-      <v-alert :type="state.status" title="訊息" :text="state.message"></v-alert>
-    </div>
-    <div v-if="state.action==='signIn'">
+    <v-text-field v-model="account.email" label="帳號"></v-text-field>
+    <v-text-field v-model="account.password" label="密碼" type="password"></v-text-field>
+    <v-alert :type="state.status" title="訊息" :text="state.message"></v-alert>
+
+    <div class="mt-2" v-if="state.action==='signIn'">
       <v-btn color="primary" @click="handleClick('signIn')">登入</v-btn>
       <v-btn color="secondary" @click="()=>state.action = 'signUp'">我要註冊</v-btn>
     </div>
-    <div v-else-if="state.action==='signUp'">
+    <div class="mt-2" v-else-if="state.action==='signUp'">
       <v-btn color="primary" @click="handleClick('signUp')">註冊</v-btn>
       <v-btn color="secondary" @click="()=>state.action = 'signIn'">我要登入</v-btn>
     </div>
-    <div v-else>
+    <div  class="mt-2" v-else>
       <v-btn color="secondary" @click="handleClick('signOut')">登出</v-btn>
     </div>
   </v-container>

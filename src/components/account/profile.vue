@@ -92,17 +92,16 @@ async function queryRecord(str: string) {
           學習進度
         </v-card-title>
         <v-card-subtitle>
-          <!-- 距離你上次登入...... -->
+          距離你上次登入......
         </v-card-subtitle>
       </v-card-item>
 
       <v-card-text>
         <div class="text-body-1 mb-2">
-          <v-btn class="mr-2" color="secondary" @click="queryRecord('Chinese')">國文</v-btn>
-          <v-btn class="mr-2" color="secondary" @click="queryRecord('English')">英文</v-btn>
-          <v-btn class="mr-2" color="secondary" @click="queryRecord('Geography')">地理</v-btn>
-          <v-btn class="mr-2" color="secondary" @click="queryRecord('History')">歷史</v-btn>
+          <v-btn class="mr-2" color="secondary" @click="queryRecord('Physics')">物理</v-btn>
+          <v-btn class="mr-2" color="secondary" @click="queryRecord('Chemical')">化學</v-btn>
           <v-btn class="mr-2" color="secondary" @click="queryRecord('Biology')">生物</v-btn>
+          <v-btn class="mr-2" color="secondary" @click="queryRecord('Geology')">地科</v-btn>
         </div>
         <div class="text-body-1">
           <div v-if="account.record[0].unit != 0">

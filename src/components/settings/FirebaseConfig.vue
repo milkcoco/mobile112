@@ -5,12 +5,12 @@ import { initializeApp } from 'firebase/app'
 
 // Your web app's Firebase configuration
 const firebaseConfig = {
-  apiKey: 'AIzaSyD4AVHp0mSF-OeZMO_rXY15RqDo1TLdNdQ',
-  authDomain: 'eltd-c4735.firebaseapp.com',
-  projectId: 'eltd-c4735',
-  storageBucket: 'eltd-c4735.appspot.com',
-  messagingSenderId: '733552733334',
-  appId: '1:733552733334:web:4785486bb89dc0d96ea6b7'
+  apiKey: "AIzaSyDw3YPsgFxzWvW2Rp_xP31DfWmRiRkicWE",
+  authDomain: "eltdnew.firebaseapp.com",
+  projectId: "eltdnew",
+  storageBucket: "eltdnew.appspot.com",
+  messagingSenderId: "582960633585",
+  appId: "1:582960633585:web:3f886bd05c02f0a352bb50"
 }
 
 // Initialize Firebase

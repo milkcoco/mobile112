@@ -6,36 +6,27 @@ const router = createRouter({
     {
       path: '/profile',
       name: 'profile',
-      component: () => import('./components/account/Profile.vue')
+      component: () => import('./components/account/profile.vue')
     },
     {
-      path: '/chinese',
-      name: 'chinese',
-      // component: EnglishDB
-      // route level code-splitting
-      // this generates a separate chunk (About.[hash].js) for this route
-      // which is lazy-loaded when the route is visited.
-      component: () => import('./components/ChineseDB.vue')
+      path: '/physics',
+      name: 'physics',
+      component: () => import('./components/PhysicsDB.vue')
     },
     {
-      path: '/english',
-      name: 'english',
-      component: () => import('./components/EnglishDB.vue')
-    },
-    {
-      path: '/geography',
-      name: 'geography',
-      component: () => import('./components/GeographyDB.vue')
-    },
-    {
-      path: '/history',
-      name: 'history',
-      component: () => import('./components/HistoryDB.vue')
+      path: '/chemical',
+      name: 'chemical',
+      component: () => import('./components/ChemicalDB.vue')
     },
     {
       path: '/biology',
       name: 'biology',
       component: () => import('./components/BiologyDB.vue')
+    },
+    {
+      path: '/geology',
+      name: 'geology',
+      component: () => import('./components/GeologyDB.vue')
     },
     {
       path: '/account',
