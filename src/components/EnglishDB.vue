@@ -58,7 +58,7 @@ watch(() => state.choice, generateQuestions)
 // }
 //generateQuestion();
 
-function checkAnswers() {
+async function checkAnswers() {
   state.message = [] // clear previous messages
   for (let i in state.exams) {
     if (state.exams[i].type == 'random') {
