@@ -13,7 +13,6 @@ let items = [
   { title: '地理', to: '/geography' },
   { title: '歷史', to: '/history' },
   { title: '生物', to: '/biology' },
-  { title: '地理講義', to: '/geographyhandouts' },
   // { title: '生物測驗', to: '/biology' }
 ]
 

@@ -46,11 +46,6 @@ const router = createRouter({
       path: '/profile',
       name: 'profile',
       component: () => import('./components/account/profile.vue')
-    },
-    {
-      path: '/geographyhandouts',
-      name: 'geographyhandouts',
-      component: () => import('./components/Geographyhandouts.vue')
     }
   ]
 })
