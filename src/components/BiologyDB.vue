@@ -17,15 +17,13 @@ watch(login, () => {
 })
 
 let units = [
-  { title: '單元一 科學方法與生命現象', value: 1 },
-  { title: '單元二 細胞的構造', value: 2 },
-  { title: '單元三 物質進出細胞的方式', value: 3 },
-  { title: '單元四 生物體的組成層次', value: 4 }
+  { title: '單元一 植物', value: 1 },
+  { title: '單元二 動物', value: 2 }
 ]
 const state = reactive({
   choice: 1,
   answer: [''],
-  answers: [[]],
+  answers: [[], []],
   message: [''],
   exams: [{ question: '', answer: '', answers: [''], option: [''], type: '' }],
   correctCount: 0,
@@ -41,7 +39,6 @@ async function generateQuestions() {
   state.exams = []
   const queryExam = query(examCollection, where('unit', '==', state.choice))
   const querySnapshot = await getDocs(queryExam)
-  state.answers.push([]);
   querySnapshot.forEach((doc) => {
     state.exams.push({
       question: doc.data().question,

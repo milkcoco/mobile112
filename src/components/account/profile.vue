@@ -92,7 +92,7 @@ async function queryRecord(str: string) {
           學習進度
         </v-card-title>
         <v-card-subtitle>
-          距離你上次登入......
+          <!-- 距離你上次登入...... -->
         </v-card-subtitle>
       </v-card-item>
 
