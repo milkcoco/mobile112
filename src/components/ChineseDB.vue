@@ -4,17 +4,17 @@ import { collection, getDocs, getFirestore, where, query, updateDoc ,addDoc ,doc
 import app from '@/components/settings/FirebaseConfig.vue'
 
 let units = [
-  { title: '單元一 判斷錯字', value: 1 },
+  { title: '單元一 古代詩人稱號', value: 1 },
   { title: '單元二 判斷季節', value: 2 }
 ]
 const state = reactive({
   correctCount :0,
   incorrectCount :0,
-  choice: { title: '單元一 判斷錯字', value: 1 },
-  answer: [],
-  answers: [[]],
+  choice: { title: '單元一 古代詩人稱號', value: 1 },
+  answer: [''],
+  answers: [[],[]],
   message: [''],
-  exams: [{ question: '', option: [], answer: '', type: '' }]
+  exams: [{ question: '', option: [], answer: '', answers:[], type: '' }]
 })
 const appAccount = inject('account',{name:'未登入',email:'',password:'',id:""})
 async function generateQuestions() {
@@ -28,6 +28,7 @@ async function generateQuestions() {
       question: doc.data().question,
       option: doc.data().option,
       answer: doc.data().answer,
+      answers: doc.data().answers,
       type: doc.data().type
     })
   })
@@ -80,7 +81,7 @@ async function checkAnswers() {
 
       if (state.exams[i].answer.length === state.answers[i].length) {
         let correct = 0
-        for (var item of state.answers[i]) {
+        for (let item of state.answers[i]) {
           if (state.exams[i].answer.includes(item)) {
             correct++
           }
@@ -98,7 +99,24 @@ async function checkAnswers() {
         state.incorrectCount++
         console.log("error")
       }
-    }
+    
+}if (state.exams[i].type === 'checkbox') {
+  if (state.exams[i].answers.length === state.answers[i].length) {
+    let correct = 0
+    for (let item of state.answers[i]) {
+      if (state.exams[i].answers.includes(item)) {
+        correct++}
+}
+if (correct == state.exams[i].answers.length) {
+state.message[i] = '答案正確'
+state.correctCount++
+} else {
+  state.message[i] = '答案錯誤'
+  state.incorrectCount++}
+} else {
+   state.message[i] = '答案錯誤'
+   state.incorrectCount++}
+}
   }
   await updateDoc(doc(db,"user",appAccount.id),{subject:arrayUnion("Chinese")})
   await updateDoc(doc(db,"user",appAccount.id),{unit:arrayUnion("Chinese"+state.choice)})
@@ -114,25 +132,40 @@ date: new Date()})
   <v-container>
     <v-select label="請選擇" v-model="state.choice" :items="units"> </v-select>
     <div v-for="(exam, index) in state.exams" :key="index">
-      {{ state.exams[index].question }}
-      <div v-if="state.exams[index].type == 'random'">
-        <v-text-field
-          v-model="state.answer[index]"
-          :label="exam.question"
-          :messages="state.message[index]"
-        ></v-text-field>
-      </div>
-      <div v-else>
+      <v-text-field
+        v-if="exam.type == 'blank'"
+        v-model="state.answer[index]"
+        :label="exam.question"
+        :messages="state.message[index]"
+      ></v-text-field>
+      <p v-if="exam.type === 'radio'">
+        <!-- {{ exam.question }}
         <span v-for="option in exam.option" :key="option">
-          <input type="checkbox" v-model="state.answers[index]" :value="option" />
+          <input type="radio" v-model="state.answer[index]" :label="option" :value="option" />
           {{ option }}
         </span>
+        {{ state.message[index] }} -->
+        <v-radio-group
+          :label="exam.question"
+          :messages="state.message[index]"
+          v-model="state.answer[index]"
+        >
+          <span v-for="option in exam.option" :key="option">
+            <v-radio :label="option" :value="option"></v-radio>
+          </span>
+        </v-radio-group>
+      </p>
+      <div v-if="exam.type === 'checkbox'">
+      <p>{{ exam.question }}</p>
+      <span v-for="options in exam.option" :key="options">
+        <v-checkbox inline v-model="state.answers[index]" :label="options" :value="options" ></v-checkbox>
+      </span>
         {{ state.message[index] }}
-      </div>
+        
     </div>
-    <v-alert color="info" icon="$info" title="檢查結果">
-      共答對{{ state.correctCount }}題 / 答錯{{ state.incorrectCount  }}題
-    </v-alert>
+    </div>
     <v-btn color="primary" @click="checkAnswers">檢查答案</v-btn>
+    <p>{{ '答對' }}{{ state.correctCount }}  {{ '題' }}</p>
+    {{ state.message }}
   </v-container>
 </template>
