@@ -19,33 +19,27 @@
     },
     "build": {
       "name": "build",
-      "command": "yarn build",
-      "runAtStart": false
+      "command": "yarn build"
     },
     "preview": {
       "name": "preview",
-      "command": "yarn preview",
-      "runAtStart": false
+      "command": "yarn preview"
     },
     "build-only": {
       "name": "build-only",
-      "command": "yarn build-only",
-      "runAtStart": false
+      "command": "yarn build-only"
     },
     "type-check": {
       "name": "type-check",
-      "command": "yarn type-check",
-      "runAtStart": false
+      "command": "yarn type-check"
     },
     "lint": {
       "name": "lint",
-      "command": "yarn lint",
-      "runAtStart": false
+      "command": "yarn lint"
     },
     "format": {
       "name": "format",
-      "command": "yarn format",
-      "runAtStart": false
+      "command": "yarn format"
     }
   }
 }
