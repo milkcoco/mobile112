@@ -1,9 +1,9 @@
 <script setup lang="ts">
-import { provide, reactive, readonly, ref, watch } from 'vue'
+import { provide, reactive, readonly, ref } from 'vue'
 import app from '@/components/settings/FirebaseConfig.vue'
 import { getAuth, onAuthStateChanged } from 'firebase/auth'
 import router from './router'
-import { doc, getDoc, getFirestore } from 'firebase/firestore';
+import {doc,getDoc ,getFirestore} from "firebase/firestore"
 
 let drawer = ref(false)
 let items = [
@@ -12,18 +12,12 @@ let items = [
   { title: '英文', to: '/english' },
   { title: '地理', to: '/geography' },
   { title: '歷史', to: '/history' },
-  { title: '生物', to: '/biology' },
-  // { title: '生物測驗', to: '/biology' }
+  { title: '生物', to: '/biology' }
 ]
 
 const account = reactive({
   name: '未登入',
-  email: '',
-  id: '',
-  password: '',
-  loginCount: 0,
-  subjects: '',
-  questionNumber: 0
+  email: ''
 })
 
 const db =getFirestore(app);
@@ -51,10 +45,7 @@ const unsub = onAuthStateChanged(auth, async (user)=>{
   }}
 );
 
-function goAccount() {
-  router.push('/account')
-}
-
+provide(/* key */ 'account', /* value */ readonly(account))
 </script>
 
 <template>
@@ -62,10 +53,7 @@ function goAccount() {
     <v-app-bar>
       <v-icon icon="plus"></v-icon>
       <v-app-bar-nav-icon @click.stop="drawer = !drawer">menu</v-app-bar-nav-icon>
-      <v-app-bar-title>Application bar</v-app-bar-title>
-      <v-spacer></v-spacer>
-      <v-btn variant="outlined" v-if="account.email===''" @click="goAccount">請先登入</v-btn>
-      <v-btn variant="outlined" v-else @click="goAccount">登出</v-btn>
+      <v-app-bar-title>Application bar {{ account.email }}</v-app-bar-title>
     </v-app-bar>
     <v-navigation-drawer floating permanent v-model="drawer">
       <v-list>
@@ -77,6 +65,11 @@ function goAccount() {
     <v-main class="d-flex flex-column align-start justify-start mb-6" style="min-height: 300px">
       <Suspense>
         <RouterView />
+        <!-- <English v-if="choice.value === 'English'" />
+        <Biology v-else-if="choice.value === 'Biology'"/>
+        <History v-else-if="choice.value === 'History'"/>
+        <Geography v-else-if="choice.value === 'Geography'"/>
+        <Chinese v-else /> -->
       </Suspense>
     </v-main>
   </v-app>
