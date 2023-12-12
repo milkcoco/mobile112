@@ -82,10 +82,10 @@ async function checkAnswers() {
     }
     
   }
-  await updateDoc(doc(db,"user",appAccount.id),{subjects:arrayUnion("English")})
-  await updateDoc(doc(db,"user",appAccount.id),{unit:arrayUnion("English "+state.choice)})
+  await updateDoc(doc(db,"user",appAccount.id),{subjects:arrayUnion("英文")})
+  await updateDoc(doc(db,"user",appAccount.id),{unit:arrayUnion("英文"+state.choice)})
   await addDoc(collection(db,"user/"+appAccount.id+"/record"),
-  {subject:"English",
+  {subject:"英文",
   unit:state.choice,
     correctCount: state.correct,
    incorrectCount: state.incorrectCount,
