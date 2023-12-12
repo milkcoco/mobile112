@@ -15,12 +15,27 @@ const state = inject('state', {
   action: 'signIn' as 'signUp' | 'signIn' | 'signOut'
 })
 
+const Account = reactive({
+  name:'',
 const account = reactive({
   name: login.name,
   email: '',
   password: '',
 })
 
+const state = reactive({
+  message: '請輸入帳號密碼',
+  status: 'info' as 'info' | 'error' | 'success' | 'warning' | undefined,
+  action: 'signIn' as 'signUp' | 'signIn' | 'signOut'
+})
+
+const auth = getAuth(app)
+const db = getFirestore(app);
+
+const login = inject('account', { name: '未登入', email: '' })
+const account = reactive({
+  name:login.name,
+})
 watch(login, () => {
   if (login.email!== ""){
     account.email = login.email
@@ -35,6 +50,11 @@ async function handleClick(status: 'signIn' | 'signUp' | 'signOut') {
     if (status === 'signUp') {
       const storeName = account.name
       state.message = '註冊中...'
+      const res = await createUserWithEmailAndPassword(auth, Account.email, Account.password)
+      const uid = res.user.uid;
+      await setDoc(doc(db, "user", uid), {
+        name: account.name
+      });
       const res = await createUserWithEmailAndPassword(auth, account.email, account.password)
       const uid = res.user.uid;
       await setDoc(doc(db, "user", uid), {
@@ -46,6 +66,9 @@ async function handleClick(status: 'signIn' | 'signUp' | 'signOut') {
       }
     } else if (status === 'signIn') {
       state.message = '登入中...'
+      const res = await signInWithEmailAndPassword(auth, Account.email, Account.password)
+      const uid = res.user.uid;
+      const userDoc = await getDoc(doc(db, "user", uid));
       const res = await signInWithEmailAndPassword(auth, account.email, account.password)
       const uid = res.user.uid;
       const userDoc = await getDoc(doc(db, "user", uid));
