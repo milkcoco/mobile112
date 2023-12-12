@@ -22,9 +22,7 @@ const account = reactive({
   email: '',
   id: '',
   password: '',
-  loginCount: 0,
-  subjects: '',
-  questionNumber: 0
+  loginCount: 0
 })
 
 const state = reactive({
@@ -47,7 +45,6 @@ const unsub = onAuthStateChanged(auth, async (user) => {
     if (userDoc.exists()) {
       account.name = userDoc.data().name? userDoc.data().name:''
       account.loginCount = userDoc.data().loginCount
-      account.subjects = userDoc.data().subjects
     }
     else{
       account.name = '未登入'
@@ -75,7 +72,7 @@ function goAccount() {
       <v-app-bar-title>Application bar</v-app-bar-title>
       <v-spacer></v-spacer>
       <v-btn variant="outlined" v-if="account.email===''" @click="goAccount">請先登入</v-btn>
-      <v-btn variant="outlined" v-else @click="goAccount">登出</v-btn>
+      <v-btn variant="outlined" v-else @click="goAccount">我要登出</v-btn>
     </v-app-bar>
     <v-navigation-drawer floating permanent v-model="drawer">
       <v-list>
