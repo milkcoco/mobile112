@@ -8,11 +8,12 @@ import { doc, getDoc, getFirestore } from 'firebase/firestore';
 let drawer = ref(false)
 let items = [
   { title: '個人資料', to: '/profile' },
+  { title: '教材區', to: './content' },
+  { title: '討論區', to: '/forum' },
   { title: '物理', to: '/physics' },
   { title: '化學', to: '/chemical' },
   { title: '生物', to: '/biology' },
   { title: '地科', to: '/geology' },
-  // { title: '生物測驗', to: '/biology' }
 ]
 
 const account = reactive({
@@ -66,8 +67,8 @@ function goAccount() {
   <v-app class="rounded rounded-md">
     <v-app-bar>
       <v-icon icon="plus"></v-icon>
-      <v-app-bar-nav-icon @click.stop="drawer = !drawer">menu</v-app-bar-nav-icon>
-      <v-app-bar-title>Application bar</v-app-bar-title>
+      <v-app-bar-nav-icon @click.stop="drawer = !drawer"><v-icon icon="mdi-menu"></v-icon></v-app-bar-nav-icon>
+      <v-app-bar-title><v-icon class="mr-2 mb-2" icon="mdi-book-open-variant"></v-icon>國中理化教學平台</v-app-bar-title>
       <v-spacer></v-spacer>
       <v-btn variant="outlined" v-if="account.email===''" @click="goAccount">請先登入</v-btn>
       <v-btn variant="outlined" v-else @click="goAccount">我要登出</v-btn>

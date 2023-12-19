@@ -32,6 +32,16 @@ const router = createRouter({
       path: '/account',
       name: 'account',
       component: () => import('./components/account/account.vue')
+    },
+    {
+      path: '/forum',
+      name: 'forum',
+      component: () => import('./components/Forum.vue')
+    },
+    {
+      path: '/content',
+      name: 'content',
+      component: () => import('./components/Content.vue')
     }
   ]
 })
