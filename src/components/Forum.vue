@@ -45,11 +45,9 @@ async function add() {
     author: addItem.author
   })
   console.log('Document written with ID: ', docRef.id)
-  location.reload()
 }
 async function del(id:string){
   await deleteDoc(doc(db, "forum", id));
-  location.reload()
 }
 </script>
 <template>
