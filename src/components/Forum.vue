@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { inject, reactive } from 'vue'
+import { inject, reactive, ref } from 'vue'
 import { addDoc, collection, deleteDoc, doc, getDocs, getFirestore } from 'firebase/firestore'
 import app from '@/components/settings/FirebaseConfig.vue'
 
@@ -9,13 +9,14 @@ const login = inject('account', { name: '未登入', email: '', id: '', loginCou
 const state = reactive({
   storys: [{ id:'', title: '格式範本', content: 'xxx', author: '作者' }]
 })
+const update = ref(0)
 
 const db = getFirestore(app)
 generateContent()
 async function generateContent() {
   // state.content = []
   const querySnapshot = await getDocs(collection(db, 'forum'))
-  //   state.answers.push([]);
+  state.storys=[];
   querySnapshot.forEach((doc) => {
     state.storys.push({
       id: doc.id,
@@ -45,9 +46,11 @@ async function add() {
     author: addItem.author
   })
   console.log('Document written with ID: ', docRef.id)
+  generateContent()
 }
 async function del(id:string){
   await deleteDoc(doc(db, "forum", id));
+  generateContent()
 }
 </script>
 <template>
